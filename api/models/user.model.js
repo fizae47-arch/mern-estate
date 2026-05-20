@@ -6,7 +6,7 @@ username: {
     required: true,
     unique: true,
 },
-emails: {
+email: {
     type: String,
     required: true,
     unique: true,
