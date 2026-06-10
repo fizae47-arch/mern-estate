@@ -50,7 +50,7 @@ export default function CreateListing() {
   };
 
   const storeImage = async (file) => {
-    const fileName = `${Date.now()}_${file.name}`;
+    const fileName = `${currentUser._id}_${Date.now()}_${file.name}`;
     const { error } = await supabase.storage
       .from('avatars')
       .upload(fileName, file, { upsert: true });
