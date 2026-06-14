@@ -5,12 +5,18 @@ import userRouter from './routes/user.routes.js';
 import authRouter from './routes/auth.route.js';
 import cookieParser from 'cookie-parser';
 import listingRouter from './routes/listing.route.js';
+import cors from 'cors';
 import path from 'path';
 
 dotenv.config();
 
 const app = express();
-const __dirname = path.resolve(); // ← YAHAN HONA CHAHIYE
+const __dirname = path.resolve(); 
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(cookieParser());
