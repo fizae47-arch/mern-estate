@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO)
   .then(() => {
     console.log('MongoDB connected!');
     app.listen(process.env.PORT || 3000, () => {
@@ -51,3 +51,5 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => {
     console.error('MongoDB connection error:', err);
   });
+
+export default app;
