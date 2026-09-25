@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose.connect(process.env.MONGO)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected!');
     app.listen(process.env.PORT || 3000, () => {

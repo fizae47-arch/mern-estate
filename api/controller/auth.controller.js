@@ -25,8 +25,8 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: pass, ...rest } = validUser._doc;
     res
-      .cookie('access_token', token, { 
-        httpOnly: true, 
+      .cookie('access_token', token, {
+        httpOnly: true,
         sameSite: 'strict',
       })
       .status(200)
@@ -40,8 +40,8 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      // Existing user - avatar update karo agar nahi hai
-      if (req.body.photo && !user.avatar) {
+      // Existing user - Google se jo bhi fresh photo aaye, use update kar do
+      if (req.body.photo) {
         user.avatar = req.body.photo;
         await user.save();
       }
