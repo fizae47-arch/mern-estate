@@ -11,15 +11,38 @@ import path from 'path';
 dotenv.config();
 
 const app = express();
-const __dirname = path.resolve(); 
+const __dirname = path.resolve();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: true,
   credentials: true,
 }));
 
 app.use(express.json());
 app.use(cookieParser());
+
+// MongoDB connection — serverless-friendly (reuse existing connection)
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(process.env.MONGO);
+    isConnected = true;
+    console.log('MongoDB connected!');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    throw err;
+  }
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Database connection failed' });
+  }
+});
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
@@ -41,15 +64,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose.connect(process.env.MONGO)
-  .then(() => {
-    console.log('MongoDB connected!');
+// Local development ke liye
+if (process.env.NODE_ENV !== 'production') {
+  connectDB().then(() => {
     app.listen(process.env.PORT || 3000, () => {
       console.log('Server is running on port 3000!');
     });
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
   });
+}
 
 export default app;
